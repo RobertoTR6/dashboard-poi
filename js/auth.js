@@ -3,8 +3,8 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 // --- CONFIGURATION ---
 // REPLACE THESE WITH YOUR SUPABASE PROJECT CREDENTIALS
 // Go to Project Settings -> API
-const SUPABASE_URL = 'https://your-project-id.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJxh... (your anon key)';
+const SUPABASE_URL = 'https://wwdehevdljsxgnoyysfy.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3ZGVoZXZkbGpzeGdub3l5c2Z5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzNDQwMDYsImV4cCI6MjA4NTkyMDAwNn0.-H57n2IjvN58F4RTufgOrJjCgeS0jiXobuS8zjdRtRc';
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 

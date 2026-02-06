@@ -19,7 +19,13 @@ const ChartRenderer = {
         const width = container.clientWidth;
         const config = window.POI_CONFIG.charts.barChart;
         const height = container.clientHeight || config.height;
-        const margin = { top: 20, right: 50, bottom: 20, left: 220 }; // Increased left margin for labels
+        const isMobile = window.innerWidth < 768;
+        const margin = {
+            top: 20,
+            right: isMobile ? 20 : 50,
+            bottom: 20,
+            left: isMobile ? 5 : 220 // Drastic reduction for mobile
+        };
 
         // Clear previous
         d3.select(selector).selectAll("*").remove();
@@ -50,28 +56,34 @@ const ChartRenderer = {
             .attr("stroke", "#e2e8f0")
             .attr("stroke-dasharray", "2,2");
 
-        // Y axis
+        // Y axis - Responsive Labeling
         const yAxis = svg.append("g")
             .attr("transform", `translate(${margin.left},0)`)
             .call(d3.axisLeft(y).tickSize(0))
             .call(g => g.select(".domain").remove());
 
-        yAxis.selectAll("text")
-            .style("font-size", "11px")
-            .style("font-family", "Roboto")
-            .style("font-weight", "500")
-            .style("fill", "#475569")
-            .text(d => d.length > 35 ? d.substring(0, 35) + '...' : d)
-            .style("cursor", "pointer")
-            .on("mouseover", function (event, d) {
-                // Show full name on hover
-                d3.select("#tooltip")
-                    .style("opacity", 1)
-                    .html(`<strong class="text-sis-primary">${d}</strong><br>Haga clic para filtrar`)
-                    .style("left", (event.pageX + 10) + "px")
-                    .style("top", (event.pageY - 28) + "px");
-            })
-            .on("mouseout", () => d3.select("#tooltip").style("opacity", 0));
+        if (!isMobile) {
+            // Desktop: Normal labels on the left
+            yAxis.selectAll("text")
+                .style("font-size", "11px")
+                .style("font-family", "Roboto")
+                .style("font-weight", "500")
+                .style("fill", "#475569")
+                .text(d => d.length > 35 ? d.substring(0, 35) + '...' : d)
+                .style("cursor", "pointer")
+                .on("mouseover", function (event, d) {
+                    d3.select("#tooltip")
+                        .style("opacity", 1)
+                        .html(`<strong class="text-sis-primary">${d}</strong><br>Haga clic para filtrar`)
+                        .style("left", (event.pageX + 10) + "px")
+                        .style("top", (event.pageY - 28) + "px");
+                })
+                .on("mouseout", () => d3.select("#tooltip").style("opacity", 0));
+        } else {
+            // Mobile: Labels INSIDE/ABOVE bars or just hidden (relying on Tooltips/Click)
+            // For now, let's hide the axis text to save space and add text ON TOP of bars
+            yAxis.selectAll("text").remove();
+        }
 
         // Bars
         const bars = svg.selectAll("rect")
@@ -126,7 +138,22 @@ const ChartRenderer = {
                     .attr("transform", "scale(1)");
             });
 
-        // Value labels
+        if (isMobile) {
+            // Mobile: Add text LABELS above the bars
+            svg.selectAll(".bar-label-mobile")
+                .data(dataset)
+                .join("text")
+                .attr("class", "bar-label-mobile")
+                .attr("x", 0) // Start at left
+                .attr("y", d => y(d[0]) - 5) // Above bar
+                .text(d => d[0].length > 40 ? d[0].substring(0, 40) + '...' : d[0])
+                .attr("fill", "#64748b")
+                .style("font-size", "10px")
+                .style("font-weight", "600")
+                .style("font-family", "Roboto");
+        }
+
+        // Value labels (Numbers)
         svg.selectAll(".label")
             .data(dataset)
             .join("text")

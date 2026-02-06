@@ -29,67 +29,66 @@
 
 <body class="p-6 bg-slate-50">
 
-    <!-- Header - Sticky (Fixed Height) - SIS Primary Color Border -->
-    <header class="sticky top-0 z-50 mb-4 bg-white px-4 shadow-md"
-        style="height: 84px; border-bottom: 3px solid var(--sis-primary);">
-        <div class="flex items-center justify-between h-full">
-            <div class="flex items-center">
-                <!-- Official Logos with SIS safety area (2x spacing) -->
-                <div class="logo-container mr-6">
-                    <img src="assets/Logo_Ministerio_Salud.png" alt="Ministerio de Salud - Logo Oficial"
-                        class="h-10 w-auto object-contain">
-                    <div class="h-8 w-px bg-slate-200"></div>
-                    <img src="assets/Logo_SIS.png" alt="Seguro Integral de Salud - Logo Oficial"
-                        class="h-12 w-auto object-contain">
+    <!-- Header - Sticky (Dynamic Height) - SIS Primary Color Border -->
+    <header class="sticky top-0 z-50 mb-4 bg-white px-4 py-2 shadow-md border-b-4 border-sis-primary">
+        <div class="flex flex-col md:flex-row items-center justify-between h-auto md:h-[84px] gap-2 md:gap-0">
+            <div class="flex flex-col md:flex-row items-center text-center md:text-left">
+                <!-- Official Logos with SIS safety area -->
+                <div class="logo-container mb-2 md:mb-0 md:mr-6 flex items-center justify-center">
+                    <img src="assets/Logo_Ministerio_Salud.png" alt="Ministerio de Salud - Logo Oficial" <div
+                        class="h-8 w-px bg-slate-200">
                 </div>
-                <div>
-                    <h1 class="text-2xl font-bold text-sis-primary leading-tight"
-                        style="font-family: 'Signika', sans-serif;">
-                        Tablero de Control POI 2026
-                    </h1>
-                    <p class="text-slate-500 font-light text-xs">Seguro Integral de Salud · Análisis Operativo</p>
-                </div>
+                <img src="assets/Logo_SIS.png" alt="Seguro Integral de Salud - Logo Oficial"
+                    class="h-12 w-auto object-contain">
             </div>
-            <!-- Right side: Total Records + Filter Button -->
-            <div class="flex items-center gap-4">
-                <!-- Data Source Badge -->
-                <span
-                    class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-500">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4">
-                        </path>
-                    </svg>
-                    SIASIS / SIGA
-                </span>
-
-                <!-- Logout Button -->
-                <button id="btn-logout" class="p-2 text-slate-400 hover:text-red-500 transition-colors"
-                    title="Cerrar Sesión">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
-                        </path>
-                    </svg>
-                </button>
-
-                <!-- Filter Button with Badge - SIS Primary Color -->
-                <button id="open-filters-drawer"
-                    class="relative p-3 rounded-lg border-2 text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-sis-primary focus:ring-offset-2"
-                    style="background-color: var(--sis-primary); border-color: var(--sis-primary); min-width: 44px; min-height: 44px;"
-                    onmouseover="this.style.backgroundColor='#4a5d9a'"
-                    onmouseout="this.style.backgroundColor='var(--sis-primary)'" aria-label="Abrir panel de filtros">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z">
-                        </path>
-                    </svg>
-                    <!-- Badge -->
-                    <span id="filter-badge"
-                        class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
-                        style="display: none;">0</span>
-                </button>
+            <div>
+                <h1 class="text-2xl font-bold text-sis-primary leading-tight"
+                    style="font-family: 'Signika', sans-serif;">
+                    Tablero de Control POI 2026
+                </h1>
+                <p class="text-slate-500 font-light text-xs">Seguro Integral de Salud · Análisis Operativo</p>
             </div>
+        </div>
+        <!-- Right side: Total Records + Filter Button -->
+        <div class="flex items-center gap-4">
+            <!-- Data Source Badge -->
+            <span
+                class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-500">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4">
+                    </path>
+                </svg>
+                SIASIS / SIGA
+            </span>
+
+            <!-- Logout Button -->
+            <button id="btn-logout" class="p-2 text-slate-400 hover:text-red-500 transition-colors"
+                title="Cerrar Sesión">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                    </path>
+                </svg>
+            </button>
+
+            <!-- Filter Button with Badge - SIS Primary Color -->
+            <button id="open-filters-drawer"
+                class="relative p-3 rounded-lg border-2 text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-sis-primary focus:ring-offset-2"
+                style="background-color: var(--sis-primary); border-color: var(--sis-primary); min-width: 44px; min-height: 44px;"
+                onmouseover="this.style.backgroundColor='#4a5d9a'"
+                onmouseout="this.style.backgroundColor='var(--sis-primary)'" aria-label="Abrir panel de filtros">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z">
+                    </path>
+                </svg>
+                <!-- Badge -->
+                <span id="filter-badge"
+                    class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
+                    style="display: none;">0</span>
+            </button>
+        </div>
         </div>
     </header>
 

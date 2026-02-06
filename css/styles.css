@@ -1,0 +1,1121 @@
+/**
+ * POI 2026 Dashboard - Styles
+ * SIS Corporate Identity
+ */
+
+/* ========================================
+   CSS Variables - SIS Brand Colors
+   ======================================== */
+:root {
+    /* SIS Primary Colors - Official Brand Manual 2024 */
+    --sis-primary: #5b6fb3;
+    /* Azul Institucional (Pantone 2726U) */
+    --sis-secondary: #57c4f2;
+    /* Celeste complementario */
+
+    /* SIS Complementary Colors */
+    --sis-gray: #C5C8C7;
+    /* Gris */
+    --sis-green: #afcc46;
+    /* Verde */
+    --sis-magenta: #dc388d;
+    /* Magenta */
+    --sis-orange: #f6a64a;
+    /* Naranja */
+    --sis-celeste: #57c4f2;
+    /* Celeste */
+
+    /* Neutral Colors */
+    --gray-50: #F8FAFC;
+    --gray-100: #F1F5F9;
+    --gray-200: #E2E8F0;
+    --gray-300: #CBD5E1;
+    --gray-400: #94A3B8;
+    --gray-500: #64748B;
+    --gray-600: #475569;
+    --gray-700: #334155;
+    --gray-800: #1E293B;
+    --gray-900: #0F172A;
+
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 0.75rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+
+    /* Border Radius */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* ========================================
+   Base Styles
+   ======================================== */
+body {
+    font-family: 'Signika', 'Montserrat', 'Roboto', sans-serif;
+    background-color: var(--gray-50);
+    color: var(--gray-700);
+    line-height: 1.6;
+    font-weight: 400;
+    /* Regular weight for body text */
+}
+
+/* Typography Hierarchy - SIS Standards */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Signika', sans-serif;
+    font-weight: 700;
+    /* Bold for headings */
+    line-height: 1.2;
+    color: var(--gray-800);
+}
+
+h1 {
+    font-size: 2rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+}
+
+h3 {
+    font-size: 1.25rem;
+}
+
+h4 {
+    font-size: 1.125rem;
+}
+
+h5 {
+    font-size: 1rem;
+}
+
+h6 {
+    font-size: 0.875rem;
+}
+
+/* Font weight utilities */
+.font-regular {
+    font-weight: 400;
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+/* Small text uses Signika for better legibility */
+.text-xs,
+.text-sm {
+    font-family: 'Signika', sans-serif;
+}
+
+/* ========================================
+   SIS Corporate Colors - Utility Classes
+   ======================================== */
+/* SIS Header - Solid Primary Color (No gradients per manual) */
+.sis-header-gradient {
+    background: var(--sis-primary);
+}
+
+.text-sis-primary {
+    color: var(--sis-primary);
+}
+
+.text-sis-secondary {
+    color: var(--sis-secondary);
+}
+
+.bg-sis-primary {
+    background-color: var(--sis-primary);
+}
+
+.bg-sis-secondary {
+    background-color: var(--sis-secondary);
+}
+
+.border-sis-primary {
+    border-color: var(--sis-primary);
+}
+
+.border-sis-secondary {
+    border-color: var(--sis-secondary);
+}
+
+.border-sis-gray {
+    border-color: var(--sis-gray);
+}
+
+.border-sis-green {
+    border-color: var(--sis-green);
+}
+
+.border-sis-magenta {
+    border-color: var(--sis-magenta);
+}
+
+.border-sis-orange {
+    border-color: var(--sis-orange);
+}
+
+.border-sis-celeste {
+    border-color: var(--sis-celeste);
+}
+
+/* Text color utilities */
+.text-sis-green {
+    color: var(--sis-green);
+}
+
+.text-sis-magenta {
+    color: var(--sis-magenta);
+}
+
+.text-sis-orange {
+    color: var(--sis-orange);
+}
+
+.text-sis-celeste {
+    color: var(--sis-celeste);
+}
+
+/* Background utilities for SIS colors */
+.bg-sis-green {
+    background-color: var(--sis-green);
+}
+
+.bg-sis-magenta {
+    background-color: var(--sis-magenta);
+}
+
+.bg-sis-orange {
+    background-color: var(--sis-orange);
+}
+
+.bg-sis-gray {
+    background-color: var(--sis-gray);
+}
+
+/* ========================================
+   Logo Standards - SIS Manual
+   ======================================== */
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.logo-container img {
+    /* Minimum sizes for digital display */
+    min-height: 40px;
+    /* ~1.5cm at 96 DPI */
+    max-height: 48px;
+    /* ~1.8cm - good for header */
+    width: auto;
+    object-fit: contain;
+    /* Safety area: 2x spacing around logos */
+    padding: 0.5rem;
+}
+
+/* Responsive logo sizing */
+@media (max-width: 768px) {
+    .logo-container img {
+        min-height: 32px;
+        max-height: 40px;
+    }
+}
+
+/* ========================================
+   Buttons - SIS Primary Color for High Hierarchy
+   ======================================== */
+.btn-primary {
+    background-color: var(--sis-primary);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-family: 'Signika', sans-serif;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(91, 111, 179, 0.2);
+}
+
+.btn-primary:hover {
+    background-color: #4a5d9a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(91, 111, 179, 0.3);
+}
+
+.btn-primary:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(91, 111, 179, 0.3);
+}
+
+.btn-secondary {
+    background-color: white;
+    color: var(--sis-primary);
+    border: 2px solid var(--sis-primary);
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-family: 'Signika', sans-serif;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background-color: var(--sis-primary);
+    color: white;
+}
+
+.btn-secondary:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(91, 111, 179, 0.3);
+}
+
+/* Touch targets - minimum 44x44px for mobile */
+button,
+a.btn,
+.btn {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+/* ========================================
+   Cards & Containers
+   ======================================== */
+.card {
+    background-color: #ffffff;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--gray-200);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.kpi-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: currentColor;
+}
+
+.kpi-card-primary::before {
+    background: var(--sis-primary);
+}
+
+.kpi-card-secondary::before {
+    background: var(--sis-secondary);
+}
+
+.kpi-card-green::before {
+    background: var(--sis-green);
+}
+
+.kpi-card-orange::before {
+    background: var(--sis-orange);
+}
+
+.kpi-card-magenta::before {
+    background: var(--sis-magenta);
+}
+
+.glass {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(10px);
+}
+
+/* ========================================
+   Filter Section
+   ======================================== */
+.filter-container {
+    background: white;
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--gray-200);
+    margin-bottom: var(--spacing-xl);
+}
+
+.filter-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--spacing-xs);
+    display: block;
+}
+
+.filter-select {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    background-color: white;
+    color: var(--gray-700);
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    outline: none;
+}
+
+.filter-select:focus {
+    border-color: var(--sis-primary);
+    box-shadow: 0 0 0 3px rgba(91, 111, 179, 0.15);
+    outline: none;
+}
+
+.filter-select:hover {
+    border-color: var(--sis-primary);
+}
+
+/* Ensure dropdown options have proper height and don't truncate */
+.filter-select option,
+select option {
+    padding: 0.5rem 0.75rem;
+    line-height: 1.6;
+    min-height: 2rem;
+    white-space: normal;
+    overflow: visible;
+}
+
+/* ========================================
+   Chart Styles
+   ======================================== */
+.chart-tooltip {
+    position: absolute;
+    text-align: center;
+    padding: var(--spacing-sm);
+    font: 12px sans-serif;
+    background: #ffffff;
+    border: 1px solid var(--gray-300);
+    box-shadow: var(--shadow-md);
+    border-radius: var(--radius-sm);
+    pointer-events: none;
+    opacity: 0;
+    color: var(--gray-800);
+    transition: opacity 0.2s;
+    z-index: 10;
+}
+
+.bar:hover {
+    fill: var(--sis-secondary);
+    transition: fill 0.2s;
+}
+
+.arc path:hover {
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+/* ========================================
+   Scrollbar
+   ======================================== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--gray-300);
+    border-radius: var(--radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-400);
+}
+
+/* ========================================
+   Animations
+   ======================================== */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* ========================================
+   Utility Classes
+   ======================================== */
+.transition-colors {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
+
+/* Tooltip Styling */
+.chart-tooltip {
+    position: absolute;
+    text-align: left;
+    padding: 8px;
+    font-size: 10px;
+    background: rgba(15, 23, 42, 0.95);
+    /* Darker slate */
+    color: #f1f5f9;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    pointer-events: auto;
+    /* Allow interaction (scrolling) */
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    z-index: 9999;
+    /* Ensure it's above everything */
+    max-width: 250px;
+    /* Limit width for readability */
+    max-height: 150px;
+    /* Limit height */
+    overflow-y: auto;
+    /* Enable scrolling */
+    scrollbar-width: thin;
+    /* Firefox */
+    backdrop-filter: blur(4px);
+    line-height: 1.3;
+}
+
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+/* ========================================
+   Responsive Utilities
+   ======================================== */
+@media (max-width: 768px) {
+    .filter-container {
+        padding: var(--spacing-md);
+    }
+
+    .kpi-card {
+        margin-bottom: var(--spacing-md);
+    }
+}
+
+/* ========================================
+   Collapsible Filters
+   ======================================== */
+.filters-advanced {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+}
+
+.filters-advanced.expanded {
+    max-height: 600px;
+    transition: max-height 0.5s ease-in;
+}
+
+/* ========================================
+   Consolidated KPI Cards
+   ======================================== */
+.kpi-card-consolidated {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    box-shadow: 0 2px 8px rgba(91, 111, 179, 0.08);
+    border-left: 4px solid var(--sis-primary);
+    transition: all 0.3s ease;
+}
+
+.kpi-card-consolidated:hover {
+    box-shadow: 0 4px 12px rgba(91, 111, 179, 0.15);
+    transform: translateY(-2px);
+}
+
+.kpi-metric {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+.kpi-metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+    font-family: 'Signika', sans-serif;
+}
+
+.kpi-metric-label {
+    font-size: 0.625rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--gray-500);
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+/* ========================================
+   Tab System
+   ======================================== */
+.tabs-container {
+    margin-bottom: 0;
+}
+
+.tab-button {
+    padding: 0.875rem 1.5rem;
+    border: none;
+    background: transparent;
+    color: var(--gray-600);
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    font-family: 'Signika', sans-serif;
+}
+
+.tab-button:hover {
+    color: var(--sis-primary);
+    background: var(--gray-50);
+}
+
+.tab-button.active {
+    color: var(--sis-primary);
+    border-bottom-color: var(--sis-primary);
+    background: var(--gray-50);
+}
+
+.tab-button svg {
+    flex-shrink: 0;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* ========================================
+   Responsive Utilities
+   ======================================== */
+@media (max-width: 768px) {
+    .filter-container {
+        padding: var(--spacing-md);
+    }
+
+    .kpi-card {
+        margin-bottom: var(--spacing-md);
+    }
+
+    .tab-button {
+        padding: 0.75rem 1rem;
+        font-size: 0.8125rem;
+    }
+
+    .tab-button svg {
+        width: 0.875rem;
+        height: 0.875rem;
+    }
+
+    .kpi-metric-value {
+        font-size: 1.5rem;
+    }
+
+    .kpi-metric-label {
+        font-size: 0.5625rem;
+    }
+}
+
+/* ========================================
+   Filter Drawer Styles
+   ======================================== */
+.drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    pointer-events: none;
+}
+
+.drawer.open {
+    pointer-events: auto;
+}
+
+.drawer-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.drawer.open .drawer-overlay {
+    opacity: 1;
+}
+
+.drawer-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 420px;
+    max-width: 90vw;
+    background: white;
+    box-shadow: -4px 0 12px rgba(0, 0, 0, 0.15);
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    will-change: transform;
+}
+
+.drawer.open .drawer-panel {
+    transform: translateX(0);
+}
+
+.drawer-header {
+    padding: 1.5rem;
+    border-bottom: 3px solid var(--sis-primary);
+    background: var(--sis-primary);
+    /* Solid SIS primary - no gradients */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(91, 111, 179, 0.15);
+}
+
+.drawer-header h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+    font-family: 'Signika', sans-serif;
+    letter-spacing: 0.02em;
+}
+
+.close-drawer {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 1.5rem;
+    font-weight: 300;
+}
+
+.close-drawer:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.drawer-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+}
+
+.drawer-footer {
+    padding: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    gap: 1rem;
+    flex-shrink: 0;
+    background: #f8fafc;
+}
+
+.drawer-footer button {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+.btn-reset {
+    background: white;
+    color: var(--sis-primary);
+    border: 2px solid var(--sis-primary) !important;
+    font-family: 'Signika', sans-serif;
+}
+
+.btn-reset:hover {
+    background: var(--sis-primary);
+    color: white;
+    border-color: var(--sis-primary) !important;
+}
+
+.btn-apply {
+    background: var(--sis-primary);
+    /* Solid SIS primary - no gradients */
+    color: white;
+    font-family: 'Signika', sans-serif;
+    box-shadow: 0 2px 4px rgba(91, 111, 179, 0.2);
+}
+
+.btn-apply:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(91, 111, 179, 0.35);
+}
+
+/* Filter Groups in Drawer */
+.filter-group {
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.filter-group:last-child {
+    border-bottom: none;
+}
+
+.filter-group h3 {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    font-family: 'Signika', sans-serif;
+    transition: all 0.2s;
+}
+
+/* Strategic Filters - Magenta */
+.filter-group-strategic h3 {
+    background: linear-gradient(135deg, rgba(220, 56, 141, 0.1) 0%, rgba(220, 56, 141, 0.05) 100%);
+    color: #dc388d;
+    border-left: 4px solid #dc388d;
+}
+
+.filter-group-strategic h3 .filter-icon {
+    stroke: #dc388d;
+}
+
+/* Management Filters - Green */
+.filter-group-management h3 {
+    background: linear-gradient(135deg, rgba(175, 204, 70, 0.1) 0%, rgba(175, 204, 70, 0.05) 100%);
+    color: #afcc46;
+    border-left: 4px solid #afcc46;
+}
+
+.filter-group-management h3 .filter-icon {
+    stroke: #afcc46;
+}
+
+/* Structure Filters - Orange */
+.filter-group-structure h3 {
+    background: linear-gradient(135deg, rgba(246, 166, 74, 0.1) 0%, rgba(246, 166, 74, 0.05) 100%);
+    color: #f6a64a;
+    border-left: 4px solid #f6a64a;
+}
+
+.filter-group-structure h3 .filter-icon {
+    stroke: #f6a64a;
+}
+
+.filter-group .filter-item {
+    margin-bottom: 1rem;
+}
+
+.filter-group .filter-item:last-child {
+    margin-bottom: 0;
+}
+
+.filter-group label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 0.375rem;
+    font-family: 'Signika', sans-serif;
+    letter-spacing: 0.01em;
+}
+
+.filter-group select {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    color: #334155;
+    background: white;
+    transition: all 0.2s;
+    font-family: 'Roboto', sans-serif;
+}
+
+.filter-group select:focus {
+    outline: none;
+    border-color: var(--sis-primary);
+    box-shadow: 0 0 0 3px rgba(91, 111, 179, 0.15);
+    background: rgba(91, 111, 179, 0.02);
+}
+
+.filter-group select:hover {
+    border-color: var(--sis-secondary);
+    background: rgba(87, 196, 242, 0.05);
+}
+
+/* ========================================
+   Filter Chips Styles
+   ======================================== */
+.filter-chips-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.75rem 0;
+    margin-bottom: 0.75rem;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.875rem;
+    background: rgba(91, 111, 179, 0.08);
+    /* Subtle SIS primary tint */
+    border: 1.5px solid var(--sis-primary);
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    color: var(--sis-primary);
+    font-weight: 600;
+    transition: all 0.2s;
+    font-family: 'Roboto', sans-serif;
+    box-shadow: 0 1px 3px rgba(91, 111, 179, 0.1);
+}
+
+.chip:hover {
+    background: rgba(91, 111, 179, 0.15);
+    /* Subtle SIS primary tint */
+    border-color: var(--sis-secondary);
+    box-shadow: 0 2px 6px rgba(91, 111, 179, 0.2);
+    transform: translateY(-1px);
+}
+
+.chip-remove {
+    width: 1.125rem;
+    height: 1.125rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background: rgba(91, 111, 179, 0.2);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.875rem;
+    color: var(--sis-primary);
+    padding: 0;
+    line-height: 1;
+    font-weight: 700;
+}
+
+.chip-remove:hover {
+    background: #ef4444;
+    color: white;
+    transform: scale(1.15);
+    box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+}
+
+.clear-all-chips {
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    border: none;
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Signika', sans-serif;
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+}
+
+.clear-all-chips:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+/* ========================================
+   Compact KPI Styles
+   ======================================== */
+.kpi-compact {
+    min-height: 60px;
+}
+
+.kpi-compact:hover {
+    border-color: var(--sis-primary);
+}
+
+/* Responsive adjustments for drawer */
+@media (max-width: 768px) {
+    .drawer-panel {
+        width: 100%;
+        max-width: 100vw;
+    }
+
+    .filter-chips-bar {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .chip {
+        flex-shrink: 0;
+    }
+}
+
+/* ========================================
+   Accessibility & Contrast Improvements
+   ======================================== */
+/* Focus indicators for keyboard navigation */
+*:focus-visible {
+    outline: 3px solid var(--sis-primary);
+    outline-offset: 2px;
+}
+
+/* Ensure sufficient contrast for icons */
+svg {
+    /* Minimum 3:1 contrast for large graphics */
+    stroke-width: 2;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .card {
+        border: 2px solid var(--gray-400);
+    }
+
+    button {
+        border: 2px solid currentColor;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ========================================
+   Icon Consistency - SIS Standards
+   ======================================== */
+.icon-sm {
+    width: 16px;
+    height: 16px;
+}
+
+.icon-md {
+    width: 20px;
+    height: 20px;
+}
+
+.icon-lg {
+    width: 24px;
+    height: 24px;
+}
+
+.icon-xl {
+    width: 32px;
+    height: 32px;
+}
+
+/* Ensure icons have proper contrast */
+.icon-primary {
+    color: var(--sis-primary);
+}
+
+.icon-secondary {
+    color: var(--sis-secondary);
+}
+
+.icon-green {
+    color: var(--sis-green);
+}
+
+.icon-magenta {
+    color: var(--sis-magenta);
+}
+
+.icon-orange {
+    color: var(--sis-orange);
+}
+
+/* Breadcrumb Navigation */
+.filter-breadcrumb { background: white; border-radius: 0.75rem; padding: 0.75rem 1rem; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); border-left: 4px solid var(--sis-primary); }
+.breadcrumb-list { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.breadcrumb-item { display: flex; align-items: center; gap: 0.375rem; padding: 0.375rem 0.75rem; background: rgba(91,111,179,0.08); border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; color: var(--sis-primary); transition: all 0.2s ease; cursor: pointer; }
+.breadcrumb-item:hover { background: rgba(91,111,179,0.15); transform: translateY(-1px); }
+.breadcrumb-item.oei { background: rgba(220,56,141,0.08); color: var(--sis-magenta); }
+.breadcrumb-item.oei:hover { background: rgba(220,56,141,0.15); }
+.breadcrumb-item.aei { background: rgba(91,111,179,0.08); color: var(--sis-primary); }
+.breadcrumb-item.ao { background: rgba(175,204,70,0.08); color: var(--sis-green); }
+.breadcrumb-separator { color: var(--gray-400); font-size: 0.875rem; margin: 0 0.25rem; }

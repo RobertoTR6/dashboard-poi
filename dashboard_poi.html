@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard POI 2026</title>
+
+    <!-- External Libraries -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SIS Institutional Fonts: Signika (Primary), Montserrat (Secondary) -->
+    <!-- Using display=swap parameter for optimal loading performance -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&family=Montserrat:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+
+
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/compact-kpis.css">
+
+    <!-- Auth Protection -->
+    <script type="module">
+        import { requireAuth } from './js/auth.js';
+        requireAuth();
+    </script>
+</head>
+
+<body class="p-6 bg-slate-50">
+
+    <!-- Header - Sticky (Fixed Height) - SIS Primary Color Border -->
+    <header class="sticky top-0 z-50 mb-4 bg-white px-4 shadow-md"
+        style="height: 84px; border-bottom: 3px solid var(--sis-primary);">
+        <div class="flex items-center justify-between h-full">
+            <div class="flex items-center">
+                <!-- Official Logos with SIS safety area (2x spacing) -->
+                <div class="logo-container mr-6">
+                    <img src="assets/Logo_Ministerio_Salud.png" alt="Ministerio de Salud - Logo Oficial"
+                        class="h-10 w-auto object-contain">
+                    <div class="h-8 w-px bg-slate-200"></div>
+                    <img src="assets/Logo_SIS.png" alt="Seguro Integral de Salud - Logo Oficial"
+                        class="h-12 w-auto object-contain">
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-sis-primary leading-tight"
+                        style="font-family: 'Signika', sans-serif;">
+                        Tablero de Control POI 2026
+                    </h1>
+                    <p class="text-slate-500 font-light text-xs">Seguro Integral de Salud · Análisis Operativo</p>
+                </div>
+            </div>
+            <!-- Right side: Total Records + Filter Button -->
+            <div class="flex items-center gap-4">
+                <!-- Data Source Badge -->
+                <span
+                    class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-500">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4">
+                        </path>
+                    </svg>
+                    SIASIS / SIGA
+                </span>
+
+                <!-- Logout Button -->
+                <button id="btn-logout" class="p-2 text-slate-400 hover:text-red-500 transition-colors"
+                    title="Cerrar Sesión">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                        </path>
+                    </svg>
+                </button>
+
+                <!-- Filter Button with Badge - SIS Primary Color -->
+                <button id="open-filters-drawer"
+                    class="relative p-3 rounded-lg border-2 text-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-sis-primary focus:ring-offset-2"
+                    style="background-color: var(--sis-primary); border-color: var(--sis-primary); min-width: 44px; min-height: 44px;"
+                    onmouseover="this.style.backgroundColor='#4a5d9a'"
+                    onmouseout="this.style.backgroundColor='var(--sis-primary)'" aria-label="Abrir panel de filtros">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z">
+                        </path>
+                    </svg>
+                    <!-- Badge -->
+                    <span id="filter-badge"
+                        class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
+                        style="display: none;">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+
+
+    <!-- Compact KPIs Bar + Filter Chips - Sticky Block -->
+    <!-- Main Dashboard Layout: Sidebar (KPIs) + Content (Charts) -->
+    <div class="flex flex-col lg:flex-row gap-6 relative" style="min-height: calc(100vh - 100px);">
+
+        <!-- Left Sidebar: KPIs + Filters -->
+        <aside class="w-full lg:w-[12%] flex-shrink-0">
+            <div class="sticky space-y-4" style="top: 84px;">
+                <!-- Breadcrumb Navigation (NEW) -->
+                <div id="filter-breadcrumb" class="mb-2" style="display: none;"></div>
+
+                <!-- KPIs Agrupados por Categoría - Stacked Vertical on Sidebar -->
+                <div class="flex flex-col gap-4">
+
+                    <!-- Grupo 1: Estructura y Procesos (Naranja/Verde Mix - Usando Naranja SIS) -->
+                    <div class="bg-white rounded-lg border-t-4 border-sis-orange shadow-md px-3 py-2">
+                        <div class="flex items-center gap-2 mb-1 pb-1 border-b border-orange-100">
+                            <svg class="w-5 h-5 text-sis-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                                </path>
+                            </svg>
+                            <h3 class="text-xs font-bold text-sis-orange uppercase tracking-wide">Estructura y Procesos
+                            </h3>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-slate-600 font-medium">Centro Costo</span>
+                                <span class="text-2xl font-bold text-sis-orange" id="kpi-cc"
+                                    style="font-family: 'Signika', sans-serif;">0</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-slate-600 font-medium">Procesos Nivel 0</span>
+                                <span class="text-2xl font-bold text-sis-green" id="kpi-process-n0"
+                                    style="font-family: 'Signika', sans-serif;">0</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-slate-600 font-medium">Procesos Nivel 1</span>
+                                <span class="text-2xl font-bold text-sis-green" id="kpi-process-n1"
+                                    style="font-family: 'Signika', sans-serif;">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grupo 2: Estratégicos (Magenta) -->
+                    <div class="bg-white rounded-lg border-t-4 border-sis-magenta shadow-md px-3 py-2">
+                        <div class="flex items-center gap-2 mb-1 pb-1 border-b border-pink-100">
+                            <svg class="w-5 h-5 text-sis-magenta" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                            </svg>
+                            <h3 class="text-xs font-bold text-sis-magenta uppercase tracking-wide">Estratégicos</h3>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-slate-600 font-medium">OEI</span>
+                                <span class="text-2xl font-bold text-sis-magenta" id="kpi-oei-count"
+                                    style="font-family: 'Signika', sans-serif;">0</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-slate-600 font-medium">Indicadores OEI</span>
+                                <span class="text-2xl font-bold text-sis-magenta" id="kpi-oei"
+                                    style="font-family: 'Signika', sans-serif;">0</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-slate-600 font-medium">AEI</span>
+                                <span class="text-2xl font-bold text-sis-magenta" id="kpi-aei-count"
+                                    style="font-family: 'Signika', sans-serif;">0</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-slate-600 font-medium">Indicadores AEI</span>
+                                <span class="text-2xl font-bold text-sis-magenta" id="kpi-aei"
+                                    style="font-family: 'Signika', sans-serif;">0</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Grupo 4: Actividades (Azul) -->
+                    <div class="bg-white rounded-lg border-t-4 border-sis-primary shadow-md px-3 py-2">
+                        <div class="flex items-center gap-2 mb-1 pb-1 border-b border-blue-100">
+                            <svg class="w-5 h-5 text-sis-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+                                </path>
+                            </svg>
+                            <h3 class="text-xs font-bold text-sis-primary uppercase tracking-wide">Actividades</h3>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-slate-600 font-medium">Actividades Operativas</span>
+                                <span class="text-2xl font-bold text-sis-primary" id="kpi-ao"
+                                    style="font-family: 'Signika', sans-serif;">0</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-slate-600 font-medium">Actividades Estandarizadas</span>
+                                <span class="text-2xl font-bold text-sis-primary" id="kpi-std"
+                                    style="font-family: 'Signika', sans-serif;">0</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-slate-600 font-medium">Tareas</span>
+                                <span class="text-2xl font-bold text-sis-primary" id="kpi-tareas"
+                                    style="font-family: 'Signika', sans-serif;">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </aside>
+
+        <!-- Right Content: Charts & Tables -->
+        <div class="w-full lg:w-[88%] space-y-6">
+            <!-- Filter Chips Bar (initially hidden) -->
+            <div id="filter-chips-bar" class="filter-chips-bar mb-4" style="display: none;">
+                <!-- Chips will be dynamically added here -->
+            </div>
+
+
+
+
+
+
+            <!-- Visualizations - Tab System -->
+            <div class="card p-6">
+                <!-- Tab Navigation - Sticky -->
+                <div class="tabs-container sticky z-30 bg-white -mx-6 -mt-6 px-6 pt-6 pb-2 shadow-sm"
+                    style="top: 84px;">
+                    <div class="flex justify-between items-center border-b-2 border-slate-200">
+                        <!-- Tabs -->
+                        <div class="flex">
+                            <!-- NEW: Strategic Tabs -->
+                            <!-- NEW: Strategic Tabs -->
+                            <!-- Vista Ejecutiva Removed -->
+                            <button class="tab-button" data-tab="tab-oei">
+                                <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                OEI
+                            </button>
+                            <button class="tab-button" data-tab="tab-aei">
+                                <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                                AEI
+                            </button>
+
+                            <!-- Existing Operational Tabs -->
+                            <button class="tab-button active" data-tab="tab-graficos">
+                                <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                                    </path>
+                                </svg>
+                                Act. Operativas
+                            </button>
+                            <button class="tab-button" data-tab="tab-detalle">
+                                <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                                Tareas
+                            </button>
+                            <button class="tab-button" data-tab="tab-timeline">
+                                <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                                Cronograma Tareas
+                            </button>
+                        </div>
+
+                        <!-- Search Input (visible only in Detalle tab) -->
+                        <div id="tab-search-container" class="hidden mb-2">
+                            <input type="text" id="search-input" placeholder="Buscar actividades..."
+                                class="bg-white border border-slate-300 rounded-lg px-4 py-2 text-sm text-slate-700 focus:ring-2 focus:ring-sis-primary outline-none shadow-sm placeholder-slate-400 w-64">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="tab-contents mt-6">
+                    <!-- NEW: Tab Executive - Vista Ejecutiva PEI -->
+                    <!-- NEW: Tab Executive - Vista Ejecutiva PEI -->
+                    <!-- Tab Removed -->
+
+                    <!-- NEW: Tab OEI - Objetivos Estratégicos -->
+                    <div id="tab-oei" class="tab-content">
+                        <div id="oei-dashboard-full">
+                            <h2 class="text-2xl font-bold mb-6"
+                                style="color: var(--sis-primary); font-family: 'Signika', sans-serif;">
+                                Objetivos Estratégicos Institucionales (OEI)
+                            </h2>
+                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+
+                                <!-- Trend Chart (Dominant) -->
+                                <div class="card p-6 lg:col-span-2">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <h3 class="text-lg font-bold" style="color: var(--sis-primary);">Tendencia del
+                                            Indicador
+                                            vs Meta (2024-2030)</h3>
+                                    </div>
+                                    <div class="mb-4">
+                                        <select id="oei-trend-filter"
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sis-primary outline-none text-sm">
+                                            <!-- Populated by JS -->
+                                        </select>
+                                    </div>
+                                    <div id="oei-line-chart" class="w-full h-[400px]"></div>
+                                    <div id="oei-indicator-specs" class="mt-6"></div>
+                                </div>
+
+
+                                <!-- Radar Chart (Less Prominent) -->
+                                <div class="card p-6 lg:col-span-1">
+                                    <h3 class="text-lg font-bold mb-4" style="color: var(--sis-primary);">Radar de
+                                        Cumplimiento
+                                        OEI</h3>
+                                    <div id="oei-radar-chart" class="w-full h-[400px] flex justify-center items-center">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="oei-table-detail"></div>
+                        </div>
+                    </div>
+
+                    <!-- NEW: Tab AEI - Acciones Estratégicas -->
+                    <div id="tab-aei" class="tab-content">
+                        <div id="aei-dashboard-full">
+                            <h2 class="text-2xl font-bold mb-6"
+                                style="color: var(--sis-primary); font-family: 'Signika', sans-serif;">
+                                Acciones Estratégicas Institucionales (AEI)
+                            </h2>
+                            <div class="card p-6 mb-6">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                    <!-- OEI Filter -->
+                                    <div>
+                                        <label for="aei-oei-filter" class="block text-sm font-semibold mb-2"
+                                            style="color: var(--sis-primary);">Filtrar por OEI:</label>
+                                        <select id="aei-oei-filter"
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sis-primary outline-none text-sm">
+                                            <option value="all">Todos los OEI</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- AEI Filter -->
+                                    <div>
+                                        <label for="aei-aei-filter" class="block text-sm font-semibold mb-2"
+                                            style="color: var(--sis-magenta);">Filtrar por AEI:</label>
+                                        <select id="aei-aei-filter"
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sis-magenta outline-none text-sm">
+                                            <option value="all">Todos los AEI</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Indicator Filter -->
+                                    <div>
+                                        <label for="aei-indicator-filter" class="block text-sm font-semibold mb-2"
+                                            style="color: var(--sis-secondary);">Filtrar por Indicador:</label>
+                                        <select id="aei-indicator-filter"
+                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sis-secondary outline-none text-sm">
+                                            <option value="all">Todos los Indicadores</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <!-- Line Chart: Indicator Progress vs Programmed Goal -->
+                                <div id="aei-chart-container" class="mb-6" style="display: none;">
+                                    <div class="mb-4 pb-3 border-b border-slate-100">
+                                        <h3 class="text-lg font-bold text-slate-700 flex items-center">
+                                            <span class="w-1.5 h-6 bg-sis-magenta mr-3 rounded-full"></span>
+                                            <span id="aei-chart-title">Avance del Indicador vs Meta Programada</span>
+                                        </h3>
+                                    </div>
+                                    <div id="aei-line-chart" class="w-full h-[400px]"></div>
+                                </div>
+
+                                <div id="aei-list"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Existing: Tab 1: Gráficos (Cost Centers + Tasks) -->
+                    <div id="tab-graficos" class="tab-content active">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- Cost Centers Chart -->
+                            <div>
+                                <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
+                                    <h2 class="text-base font-bold text-slate-700 flex items-center">
+                                        <span class="w-1.5 h-6 bg-sis-primary mr-3 rounded-full"></span>
+                                        Top 10 Centros de Costo
+                                    </h2>
+                                    <select id="cc-filter"
+                                        class="bg-white border border-slate-300 text-slate-600 text-xs rounded-lg px-2 py-1.5 outline-none focus:ring-2 focus:ring-sis-primary transition-shadow">
+                                        <option value="all">Todas</option>
+                                        <option value="estandarizada">Estandarizadas</option>
+                                    </select>
+                                </div>
+                                <div id="chart-cc" class="w-full h-[500px]"></div>
+                            </div>
+
+                            <!-- Tasks Chart -->
+                            <div>
+                                <div class="mb-4 pb-3 border-b border-slate-100">
+                                    <h2 class="text-base font-bold text-slate-700 flex items-center">
+                                        <span class="w-1.5 h-6 bg-sis-secondary mr-3 rounded-full"></span>
+                                        Top 10 Tareas
+                                    </h2>
+                                </div>
+                                <div id="chart-tasks" class="w-full h-[500px]"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Detalle de Actividades (Data Table) -->
+                    <div id="tab-detalle" class="tab-content">
+                        <div class="overflow-x-auto max-h-[500px]">
+                            <table class="w-full text-left text-sm text-slate-600">
+                                <thead class="bg-slate-50 sticky top-0 z-10">
+                                    <tr>
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider min-w-[400px] border-r border-slate-200">
+                                            Descripción
+                                        </th>
+                                        <th
+                                            class="px-2 py-3 text-center text-xs font-bold text-slate-500 uppercase tracking-wider w-24 border-r border-slate-200">
+                                            Unidad<br>Medida
+                                        </th>
+                                        <!-- Months -->
+                                        <th
+                                            class="px-1 py-3 text-center text-[10px] font-bold text-slate-500 uppercase w-10 bg-slate-100">
+                                            Ene</th>
+                                        <th
+                                            class="px-1 py-3 text-center text-[10px] font-bold text-slate-500 uppercase w-10">
+                                            Feb</th>
+                                        <th
+                                            class="px-1 py-3 text-center text-[10px] font-bold text-slate-500 uppercase w-10 bg-slate-100">
+                                            Mar</th>
+                                        <th
+                                            class="px-1 py-3 text-center text-[10px] font-bold text-slate-500 uppercase w-10">
+                                            Abr</th>
+                                        <th
+                                            class="px-1 py-3 text-center text-[10px] font-bold text-slate-500 uppercase w-10 bg-slate-100">
+                                            May</th>
+                                        <th
+                                            class="px-1 py-3 text-center text-[10px] font-bold text-slate-500 uppercase w-10">
+                                            Jun</th>
+                                        <th
+                                            class="px-1 py-3 text-center text-[10px] font-bold text-slate-500 uppercase w-10 bg-slate-100">
+                                            Jul</th>
+                                        <th
+                                            class="px-1 py-3 text-center text-[10px] font-bold text-slate-500 uppercase w-10">
+                                            Ago</th>
+                                        <th
+                                            class="px-1 py-3 text-center text-[10px] font-bold text-slate-500 uppercase w-10 bg-slate-100">
+                                            Set</th>
+                                        <th
+                                            class="px-1 py-3 text-center text-[10px] font-bold text-slate-500 uppercase w-10">
+                                            Oct</th>
+                                        <th
+                                            class="px-1 py-3 text-center text-[10px] font-bold text-slate-500 uppercase w-10 bg-slate-100">
+                                            Nov</th>
+                                        <th
+                                            class="px-1 py-3 text-center text-[10px] font-bold text-slate-500 uppercase w-10">
+                                            Dic</th>
+
+                                        <th
+                                            class="px-2 py-3 text-center text-xs font-bold text-slate-700 uppercase tracking-wider w-16 border-l border-slate-200 bg-slate-100">
+                                            Total
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-body" class="divide-y divide-slate-100 bg-white">
+                                    <!-- Rows injected by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Timeline Chart -->
+                    <div id="tab-timeline" class="tab-content">
+                        <div class="mb-4 pb-3 border-b border-slate-100">
+                            <h2 class="text-lg font-bold text-slate-700 flex items-center">
+                                <span class="w-1.5 h-6 bg-indigo-500 mr-3 rounded-full"></span>
+                                Programación Mensual (Meta Física)
+                            </h2>
+                        </div>
+                        <div id="chart-timeline-content" class="w-full h-[350px]"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tooltip moved to body -->
+
+            <!-- Load Data -->
+            <script src="js/definitions.js"></script>
+            <!-- <script src="data.js"></script> REMOVED: Duplicate/Incorrect path, see js/data.js below -->
+
+
+            <!-- Filter Drawer -->
+            <div id="filters-drawer" class="drawer">
+                <!-- Overlay -->
+                <div class="drawer-overlay"></div>
+
+                <!-- Drawer Panel -->
+                <div class="drawer-panel">
+                    <!-- Header -->
+                    <div class="drawer-header">
+                        <h2>Filtros</h2>
+                        <button class="close-drawer" aria-label="Cerrar panel de filtros">×</button>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="drawer-content">
+                        <!-- 1. Filtros de Estructura (Naranja) - PRIMERO -->
+                        <div class="filter-group filter-group-structure">
+                            <h3>
+                                <svg class="filter-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                </svg>
+                                Filtros de Estructura
+                            </h3>
+
+                            <div class="filter-item">
+                                <label for="global-tipo-cc-filter">Tipo CC</label>
+                                <select id="global-tipo-cc-filter">
+                                    <option value="all">Todos</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-item">
+                                <label for="global-cc-filter">Centro de Costo</label>
+                                <select id="global-cc-filter">
+                                    <option value="all">Todos</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- 2. Filtros Estratégicos (Magenta) - SEGUNDO -->
+                        <div class="filter-group filter-group-strategic">
+                            <h3>
+                                <svg class="filter-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                </svg>
+                                Filtros Estratégicos
+                            </h3>
+
+                            <div class="filter-item">
+                                <label for="global-oei-filter">OEI</label>
+                                <select id="global-oei-filter">
+                                    <option value="all">Todos</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-item">
+                                <label for="global-aei-filter">AEI</label>
+                                <select id="global-aei-filter">
+                                    <option value="all">Todos</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-item">
+                                <label for="global-ao-filter">Actividad Operativa</label>
+                                <select id="global-ao-filter">
+                                    <option value="all">Todas</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-item">
+                                <label for="global-tarea-filter">Tarea</label>
+                                <select id="global-tarea-filter">
+                                    <option value="all">Todas</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- 3. Filtros de Gestión (Verde) - ÚLTIMO -->
+                        <div class="filter-group filter-group-management">
+                            <h3>
+                                <svg class="filter-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                Filtros de Gestión
+                            </h3>
+
+                            <div class="filter-item">
+                                <label for="global-process-type-filter">Tipo de Proceso</label>
+                                <select id="global-process-type-filter">
+                                    <option value="all">Todos</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-item">
+                                <label for="global-process-n0-filter">Macroproceso (N0)</label>
+                                <select id="global-process-n0-filter">
+                                    <option value="all">Todos</option>
+                                </select>
+                            </div>
+
+                            <div class="filter-item">
+                                <label for="global-process-n1-filter">Proceso (N1)</label>
+                                <select id="global-process-n1-filter">
+                                    <option value="all">Todos</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="drawer-footer">
+                        <button class="btn-reset" id="reset-filters">Limpiar Filtros</button>
+                        <button class="btn-apply" id="apply-filters">Aplicar</button>
+                    </div>
+                </div>
+            </div>
+
+        </div> <!-- End Right Content -->
+    </div> <!-- End Main Flex Container -->
+
+    <!-- Tooltip (Moved to body for correct absolute positioning) -->
+    <div id="tooltip" class="chart-tooltip"></div>
+
+    <!-- Load Application Modules -->
+    <!-- PEI Data & Dashboards (NEW) -->
+    <script src="js/data.js"></script>
+    <script src="js/pei_data.js"></script>
+    <script src="js/peiDataProcessor.js"></script>
+    <script src="js/oeiDashboard.js"></script>
+    <script src="js/aeiDashboard.js"></script>
+    <script src="js/breadcrumbNav.js"></script>
+
+    <!-- Existing Modules -->
+    <script src="js/config.js"></script>
+    <script src="js/dataProcessor.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/filterDrawer.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+
+    <!-- Auth Logout Handler -->
+    <script type="module">
+        import { logout } from './js/auth.js';
+
+        const btnLogout = document.getElementById('btn-logout');
+        if (btnLogout) {
+            btnLogout.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (confirm('¿Está seguro que desea cerrar sesión?')) {
+                    logout();
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

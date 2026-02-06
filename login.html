@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - Tablero POI 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Signika:wght@300;400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            background-color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-image: url('assets/pattern_bg.png');
+            /* Optional texture */
+            background-size: cover;
+        }
+
+        .login-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 420px;
+            border-top: 5px solid var(--sis-primary);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            font-family: 'Signika', sans-serif;
+        }
+
+        .input-field:focus {
+            border-color: var(--sis-primary);
+            box-shadow: 0 0 0 3px rgba(91, 111, 179, 0.1);
+        }
+
+        .btn-login {
+            background-color: var(--sis-primary);
+            color: white;
+            width: 100%;
+            padding: 0.875rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            font-family: 'Signika', sans-serif;
+            transition: background-color 0.2s;
+        }
+
+        .btn-login:hover {
+            background-color: #4a5d9a;
+        }
+
+        .sis-logo {
+            height: 64px;
+            margin-bottom: 1.5rem;
+            object-fit: contain;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-card">
+        <div class="text-center mb-6">
+            <div class="logo-container justify-center mb-4">
+                <img src="assets/Logo_Ministerio_Salud.png" alt="Ministerio de Salud" class="h-10">
+                <div class="h-8 w-px bg-slate-300 mx-3"></div>
+                <img src="assets/Logo_SIS.png" alt="SIS" class="h-12">
+            </div>
+            <h1 class="text-2xl font-bold text-slate-800 mb-2" style="font-family: 'Signika', sans-serif;">¡Bienvenido!
+            </h1>
+            <p class="text-slate-500 text-sm">Ingresa tus credenciales para acceder al Tablero de Control POI 2026</p>
+        </div>
+
+        <form id="login-form">
+            <div class="input-group">
+                <label for="email" class="block text-sm font-semibold text-slate-700 mb-1">Correo Electrónico</label>
+                <input type="email" id="email" class="input-field" placeholder="usuario@sis.gob.pe" required>
+            </div>
+
+            <div class="input-group">
+                <label for="password" class="block text-sm font-semibold text-slate-700 mb-1">Contraseña</label>
+                <input type="password" id="password" class="input-field" placeholder="••••••••" required>
+            </div>
+
+            <div id="error-message"
+                class="hidden mb-4 text-red-500 text-sm text-center font-semibold bg-red-50 p-2 rounded">
+                Credenciales incorrectas.
+            </div>
+
+            <button type="submit" class="btn-login flex justify-center items-center gap-2">
+                <span id="btn-text">Iniciar Sesión</span>
+                <!-- Spinner (Hidden by default) -->
+                <svg id="loading-spinner" class="animate-spin h-5 w-5 text-white hidden"
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                </svg>
+            </button>
+        </form>
+
+        <div class="mt-6 text-center text-xs text-slate-400">
+            &copy; 2026 Seguro Integral de Salud. Todos los derechos reservados.
+        </div>
+    </div>
+
+    <!-- Firebase SDK (Modular) -->
+    <script type="module">
+        import { login } from './js/auth.js';
+
+        // Listen for Auth State Changes (handled inside auth.js mostly, but here we drive the form)
+        const loginForm = document.getElementById('login-form');
+        const errorMessage = document.getElementById('error-message');
+        const btnText = document.getElementById('btn-text');
+        const spinner = document.getElementById('loading-spinner');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // UI Loading State
+            errorMessage.classList.add('hidden');
+            btnText.textContent = 'Verificando...';
+            spinner.classList.remove('hidden');
+
+            try {
+                await login(email, password);
+                // Redirect happens in auth.js logic or we do it here
+                window.location.href = 'dashboard_poi.html';
+            } catch (error) {
+                console.error("Login failed", error);
+                // Supabase error object often has .message or .code
+                const code = error.code || error.message;
+                errorMessage.textContent = getFriendlyErrorMessage(code);
+                errorMessage.classList.remove('hidden');
+                btnText.textContent = 'Iniciar Sesión';
+                spinner.classList.add('hidden');
+            }
+        });
+
+        function getFriendlyErrorMessage(errorCode) {
+            switch (errorCode) {
+                case 'auth/invalid-credential':
+                case 'invalid_grant': // Supabase common error
+                    return 'Correo o contraseña incorrectos.';
+                case 'auth/user-not-found':
+                    return 'No existe una cuenta con este correo.';
+                default:
+                    // Supabase often returns simple message strings in error.message
+                    return errorCode || 'Error al iniciar sesión.';
+            }
+        }
+    </script>
+
+</body>
+
+</html>

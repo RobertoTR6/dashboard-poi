@@ -1,0 +1,28 @@
+cod_Centro_Costo_Ejecutor
+Centro_Costo_Ejecutor
+CC_ABRV
+cod_oe
+OE
+cod_aei
+AEI
+cod_proceso
+tipo_Proceso
+cod_n0_sis
+Proceso_N0
+cod_n1_sis
+Proceso_N1
+cod_ao_sis
+ACTIVIDAD OPERATIVA
+ACTIVIDAD OPERATIVA_MAY_SINtil
+Norma_Normativo_AO
+Definición_Actividad_Operativa
+COD_2025_SIGESP
+COD_2026
+COD_2026_V1
+TAREAS
+Definición_Operativa_tarea
+UM_TAREA
+RESPONSABLE ACTUALIZACIÓN
+FUENTE
+do_nov2025_Equivalencia
+FECHA ACTUALIZACIÓN
